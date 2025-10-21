@@ -25,6 +25,10 @@ type Article struct {
     UpdatedAt time.Time `json:"updated_at"`
 }
 
+//jwt secret key: to be set in env variable
+var jwtKey = []byte("your_secret_key_here")
+
+
 
 func main() {
 
