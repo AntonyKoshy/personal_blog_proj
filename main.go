@@ -24,9 +24,12 @@ const (
 // Struct representing articles table
 type Article struct {
 	ID        int       `json:"id"`
+	Title     string    `json:"title`
 	Content   string    `json:"content"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+	Category  string    `json:"catergory"`
+	Tags      []string  `json:"tags"`
 }
 
 // jwt secret key: to be set in env variable
@@ -113,7 +116,7 @@ func getArticlesHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		// Query the database for articles
-		rows, err := conn.Query(context.Background(), "SELECT id, content, created_at, updated_at FROM articles")
+		rows, err := conn.Query(context.Background(), "SELECT id, content, title , created_at, updated_at, category, tags FROM articles")
 		if err != nil {
 			http.Error(w, "Failed to fetch articles", http.StatusInternalServerError)
 			return
@@ -124,7 +127,7 @@ func getArticlesHandler(w http.ResponseWriter, r *http.Request) {
 
 		for rows.Next() {
 			var a Article
-			if err := rows.Scan(&a.ID, &a.Content, &a.CreatedAt, &a.UpdatedAt); err != nil {
+			if err := rows.Scan(&a.ID, &a.Content, &a.Title, &a.CreatedAt, &a.UpdatedAt, &a.Category, &a.Tags); err != nil {
 				http.Error(w, "Error scanning articles", http.StatusInternalServerError)
 				return
 			}
