@@ -49,6 +49,8 @@ func main() {
 	// mux.Handle("/articles", http.HandlerFunc(handlers.GetArticlesHandler(articleRepo)))
 	// mux.Handle("/articles", http.HandlerFunc(handlers.CreateArticleHandler(articleRepo)))
 	mux.HandleFunc("GET /articles", handlers.GetArticlesHandler(articleRepo))
+	mux.HandleFunc("GET /articles/{id}", handlers.GetArticlesByIDHandler(articleRepo))
+
 	mux.HandleFunc("POST /articles", handlers.CreateArticleHandler(articleRepo))
 
 	// Start server

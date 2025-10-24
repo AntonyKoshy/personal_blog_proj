@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"personal-blog/internals/models"
 	"personal-blog/internals/repository"
+	"strconv"
 )
 
 func GetArticlesHandler(repo *repository.ArticleRepository) http.HandlerFunc {
@@ -46,6 +47,32 @@ func CreateArticleHandler(repo *repository.ArticleRepository) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(a)
+
+	}
+}
+
+// Handler to parse out id from URL & invoke repo func
+func GetArticlesByIDHandler(repo *repository.ArticleRepository) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+		idStr := r.PathValue("id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			http.Error(w, "Invalid article ID", http.StatusBadRequest)
+			return
+		}
+
+		article, err := repo.FetchArticleByID(context.Background(), id)
+		if err != nil {
+			http.Error(w, "Failed to fetch article", http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(article)
 
 	}
 }
