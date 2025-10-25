@@ -46,12 +46,12 @@ func main() {
 	mux := http.NewServeMux()
 
 	// Register protected routes
-	// mux.Handle("/articles", http.HandlerFunc(handlers.GetArticlesHandler(articleRepo)))
-	// mux.Handle("/articles", http.HandlerFunc(handlers.CreateArticleHandler(articleRepo)))
+
 	mux.HandleFunc("GET /articles", handlers.GetArticlesHandler(articleRepo))
 	mux.HandleFunc("GET /articles/{id}", handlers.GetArticlesByIDHandler(articleRepo))
-
+	mux.HandleFunc("PUT /articles/{id}", handlers.UpdateArticleHandler(articleRepo))
 	mux.HandleFunc("POST /articles", handlers.CreateArticleHandler(articleRepo))
+	mux.HandleFunc("DELETE /articles/{id}", handlers.DeleteArticleHandler(articleRepo))
 
 	// Start server
 	log.Println("Server started at :8080")
